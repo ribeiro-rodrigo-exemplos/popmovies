@@ -32,8 +32,9 @@ public class MovieService {
         this.baseUrl = context.getString(R.string.api_url);
     }
 
-    public PageMoviesDTO getPopularMovies(){
-        String endpoint = getEndpoint(R.string.popular_endpoint);
+    public PageMoviesDTO getPopularMovies(int page){
+
+        String endpoint = String.format("%s&page=%d",getEndpoint(R.string.popular_endpoint),page);
 
         ResponseEntity<PageMoviesDTO> response = template.getForEntity(endpoint, PageMoviesDTO.class);
         if(response.getStatusCode() == HttpStatus.OK)

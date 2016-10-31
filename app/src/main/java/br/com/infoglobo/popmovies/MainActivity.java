@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private MoviesAdapter moviesAdapter;
     private MovieService movieService;
     private ProgressBar progressBar;
+    private int currentPage = 1;
+    private int totalPages = 0;
     private static final String TAG = "PopMovies";
 
     @Override
@@ -41,18 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         moviesList.setLayoutManager(linearLayoutManager);
-
-        /*List<Movie> movies = Arrays.asList(
-                new Movie("X-Men",10f),
-                new Movie("Salt",8f),
-                new Movie("Super Girl",9f),
-                new Movie("Lost",10f),
-                new Movie("Salt",4.5f),
-                new Movie("Super Girl",9.2f),
-                new Movie("Lost",7.3f));
-
-        final MoviesAdapter adapter = new MoviesAdapter(movies,this);
-        moviesList.setAdapter(adapter); */
 
         moviesAdapter = new MoviesAdapter(new ArrayList<Movie>(),MainActivity.this);
         moviesList.setAdapter(moviesAdapter);
@@ -72,8 +62,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }));
 
+        moviesList.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) moviesList.getLayoutManager();
+
+                if(moviesAdapter.getItemCount() == layoutManager.findLastCompletelyVisibleItemPosition()+1){
+
+                    if(currentPage < totalPages){
+                        progressBar.setVisibility(ProgressBar.VISIBLE);
+                        requestMovies();
+                    }
+
+                }
+            }
+        });
 
         movieService = new MovieService(this);
+
+        requestMovies();
+
+    }
+
+    private void requestMovies(){
 
         AsyncTask<?,?,PageMoviesDTO> requestTask = new AsyncTask<Object,Object,PageMoviesDTO>(){
 
@@ -82,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
                 try{
 
-                    return movieService.getPopularMovies();
+                    return movieService.getPopularMovies(currentPage+1);
 
                 }catch (Exception e){
                     Log.e(TAG,e.getMessage(),e);
@@ -105,10 +122,11 @@ public class MainActivity extends AppCompatActivity {
 
                 moviesAdapter.addMovies(dto.getResults());
                 progressBar.setVisibility(ProgressBar.INVISIBLE);
+                currentPage = dto.getPage();
+                totalPages = dto.getTotalPages();
             }
         };
 
         requestTask.execute();
-
     }
 }
