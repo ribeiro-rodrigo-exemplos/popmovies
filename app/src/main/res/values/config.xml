@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="api_url">https://api.themoviedb.org/3/</string>
+    <string name="api_token">f5634f4941b730c1f142619e0636421e</string>
+    <string name="movie_endpoint">/movie/{id}</string>
+    <string name="popular_endpoint">/movie/popular</string>
+    <string name="image_cdn">http://image.tmdb.org/t/p/w185</string>
+</resources>

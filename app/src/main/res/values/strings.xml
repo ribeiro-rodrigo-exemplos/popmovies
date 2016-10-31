@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PopMovies</string>
+    <string name="details_title">Details</string>
+    <string name="movie_rating_list">Rating</string>
+    <string name="get_movies_error_request">Could not get the movie list. Try again later.</string>
+    <string name="get_movie_error_details">Could not get the details of the film. Try again later.</string>
+</resources>
